@@ -186,6 +186,12 @@ The SQLite database file (`kupdom.db`) is created in the project root directory.
 - Export/import functionality
 - Multi-language support
 
+## TODOs
+
+- Fix that password is in plain text in database.ts
+- Explore realtime updates of list via websockets
+- Add functionality for links that generate new prefilled list
+
 ## License
 
 This project is open source and available under the MIT License.
