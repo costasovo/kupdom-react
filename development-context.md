@@ -38,7 +38,11 @@ KupDom is a Next.js SSR React app for managing shopping lists with:
 - Share functionality working
 
 ## TODOs for Future Sessions
-1. **Security**: Fix plain text password storage (use bcrypt)
+1. ✅ **Security**: Fix plain text password storage (use bcrypt) - COMPLETED
+   - Implemented secure init-db.js script
+   - Removed hardcoded password from source code
+   - Added npm run init-db command
+   - Supports command line args and environment variables
 2. **Real-time**: Explore WebSocket implementation for live updates
 3. **UX**: Add prefilled list links for easier sharing
 
@@ -67,10 +71,19 @@ kupdom/
 - Implemented toggle logic for item states (bought/unavailable)
 
 ## Recent Changes
+- ✅ Fixed password security with secure database initialization script
 - Fixed optimistic updates for new items
 - Updated tests to check for man.png image
 - Added TODOs to README
 - All changes committed to git
+
+## Database Setup (Updated)
+The application now uses a secure database initialization process:
+- Run `npm run init-db` to set up database with admin credentials
+- No hardcoded passwords in source code
+- Supports command line arguments and environment variables
+- Uses bcrypt for secure password hashing
+- Database file is gitignored for security
 
 ## Next Steps
 When resuming tomorrow, you can:
