@@ -2,10 +2,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import HomePage from '../page'
 
-// Mock fetch
-const mockFetch = jest.fn()
-global.fetch = mockFetch
-
 // Mock Next.js router
 const mockPush = jest.fn()
 jest.mock('next/navigation', () => ({
@@ -55,7 +51,7 @@ describe('HomePage', () => {
     it('creates a new list successfully', async () => {
       const user = userEvent.setup()
 
-      mockFetch.mockResolvedValueOnce({
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => ({ code: 'ABC123', id: 1 }),
       })
@@ -66,7 +62,7 @@ describe('HomePage', () => {
       await user.click(createButton)
 
       await waitFor(() => {
-        expect(mockFetch).toHaveBeenCalledWith('/api/lists', {
+        expect(global.fetch).toHaveBeenCalledWith('/api/lists', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ title: 'My Shopping List' }),
@@ -77,8 +73,15 @@ describe('HomePage', () => {
     it('shows loading state while creating', async () => {
       const user = userEvent.setup()
       
-      // Mock a slow response
-      mockFetch.mockImplementationOnce(() => new Promise(resolve => setTimeout(resolve, 100)))
+      // Mock a slow response that will eventually resolve properly
+      ;(global.fetch as jest.Mock).mockImplementationOnce(() => 
+        new Promise(resolve => 
+          setTimeout(() => resolve({
+            ok: true,
+            json: async () => ({ code: 'ABC123', id: 1 }),
+          }), 100)
+        )
+      )
 
       render(<HomePage />)
       
@@ -92,7 +95,7 @@ describe('HomePage', () => {
       const user = userEvent.setup()
       const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
       
-      mockFetch.mockResolvedValueOnce({
+      ;(global.fetch as jest.Mock).mockResolvedValueOnce({
         ok: false,
       })
 
