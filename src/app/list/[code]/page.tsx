@@ -293,7 +293,7 @@ export default function ShoppingListPage() {
           <div className="flex items-center justify-between">
             <button
               onClick={() => router.push('/')}
-              className="text-green-600 hover:text-green-700"
+              className="text-green-600 hover:text-green-700 cursor-pointer"
             >
               ← Back
             </button>
@@ -320,7 +320,7 @@ export default function ShoppingListPage() {
             </div>
             <button
               onClick={() => setShowShareModal(true)}
-              className="text-green-600 hover:text-green-700 p-2"
+              className="text-green-600 hover:text-green-700 p-2 cursor-pointer"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
@@ -338,7 +338,7 @@ export default function ShoppingListPage() {
               <h2 className="text-lg font-semibold text-gray-800">Share List</h2>
               <button
                 onClick={() => setShowShareModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
               >
                 ✕
               </button>

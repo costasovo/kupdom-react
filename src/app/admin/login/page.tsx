@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-200 text-green-800 font-semibold py-3 px-6 rounded-lg hover:bg-green-300 disabled:bg-green-100 disabled:cursor-not-allowed transition-colors duration-200"
+            className="w-full bg-green-200 text-green-800 font-semibold py-3 px-6 rounded-lg hover:bg-green-300 disabled:bg-green-100 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
         <div className="mt-6 text-center">
           <button
             onClick={() => router.push('/')}
-            className="text-gray-500 hover:text-gray-700 underline text-sm"
+            className="text-gray-500 hover:text-gray-700 underline text-sm cursor-pointer"
           >
             ← Back to Home
           </button>

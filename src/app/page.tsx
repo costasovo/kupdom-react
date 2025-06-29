@@ -52,7 +52,7 @@ export default function HomePage() {
       <div className="absolute top-4 right-4">
         <button
           onClick={() => router.push('/admin/login')}
-          className="text-xs text-gray-500 hover:text-gray-700 underline"
+          className="text-xs text-gray-500 hover:text-gray-700 underline cursor-pointer"
         >
           Admin
         </button>
@@ -79,7 +79,7 @@ export default function HomePage() {
         <button
           onClick={createNewList}
           disabled={isCreating}
-          className="w-full mb-6 bg-green-200 hover:bg-green-300 disabled:bg-green-100 text-green-800 font-semibold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center"
+          className="w-full mb-6 bg-green-200 hover:bg-green-300 disabled:bg-green-100 text-green-800 font-semibold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center cursor-pointer"
         >
           {isCreating ? (
             <>
@@ -122,7 +122,7 @@ export default function HomePage() {
           <button
             onClick={goToList}
             disabled={!listCode.trim()}
-            className="w-full bg-amber-200 hover:bg-amber-300 disabled:bg-amber-100 text-amber-800 font-semibold py-3 px-6 rounded-xl transition-colors duration-200"
+            className="w-full bg-amber-200 hover:bg-amber-300 disabled:bg-amber-100 text-amber-800 font-semibold py-3 px-6 rounded-xl transition-colors duration-200 cursor-pointer"
           >
             Go to List
           </button>

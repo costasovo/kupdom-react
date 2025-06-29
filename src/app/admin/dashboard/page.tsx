@@ -73,7 +73,7 @@ export default function AdminDashboardPage() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => router.push('/admin/login')}
-            className="bg-green-200 text-green-800 px-6 py-2 rounded-lg hover:bg-green-300"
+            className="bg-green-200 text-green-800 px-6 py-2 rounded-lg hover:bg-green-300 cursor-pointer"
           >
             Back to Login
           </button>
@@ -94,7 +94,7 @@ export default function AdminDashboardPage() {
             </div>
             <button
               onClick={() => router.push('/')}
-              className="text-green-600 hover:text-green-700"
+              className="text-green-600 hover:text-green-700 cursor-pointer"
             >
               ← Back to Home
             </button>
@@ -200,7 +200,7 @@ export default function AdminDashboardPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => router.push(`/list/${list.code}`)}
-                          className="text-green-600 hover:text-green-700 mr-3"
+                          className="text-green-600 hover:text-green-700 mr-3 cursor-pointer"
                         >
                           View
                         </button>
@@ -223,14 +223,14 @@ export default function AdminDashboardPage() {
               <button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-2 text-sm bg-green-200 text-green-800 rounded-lg hover:bg-green-300 disabled:bg-green-100 disabled:cursor-not-allowed"
+                className="px-3 py-2 text-sm bg-green-200 text-green-800 rounded-lg hover:bg-green-300 disabled:bg-green-100 disabled:cursor-not-allowed cursor-pointer"
               >
                 Previous
               </button>
               <button
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="px-3 py-2 text-sm bg-green-200 text-green-800 rounded-lg hover:bg-green-300 disabled:bg-green-100 disabled:cursor-not-allowed"
+                className="px-3 py-2 text-sm bg-green-200 text-green-800 rounded-lg hover:bg-green-300 disabled:bg-green-100 disabled:cursor-not-allowed cursor-pointer"
               >
                 Next
               </button>
