@@ -1,0 +1,35 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getShoppingListByCode, addItem } from '@/lib/database';
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { code: string } }
+) {
+  try {
+    const { code } = params;
+    const { name } = await request.json();
+    
+    if (!code) {
+      return NextResponse.json({ error: 'List code is required' }, { status: 400 });
+    }
+
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      return NextResponse.json({ error: 'Item name is required' }, { status: 400 });
+    }
+
+    const list = getShoppingListByCode(code);
+    if (!list) {
+      return NextResponse.json({ error: 'Shopping list not found' }, { status: 404 });
+    }
+
+    const result = addItem(list.id, name.trim());
+    
+    return NextResponse.json({ 
+      success: true, 
+      id: result.lastInsertRowid 
+    });
+  } catch (error) {
+    console.error('Error adding item:', error);
+    return NextResponse.json({ error: 'Failed to add item' }, { status: 500 });
+  }
+} 
