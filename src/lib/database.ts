@@ -146,7 +146,6 @@ export function verifyAdminCredentials(username: string, password: string): bool
   return bcrypt.compareSync(password, user.password_hash);
 }
 
-// Initialize database on import
-initializeDatabase();
+// NOTE: Call initializeDatabase() from your app entry point (e.g., in API handler or _app.tsx)
 
 export default db; 
