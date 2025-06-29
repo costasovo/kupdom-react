@@ -20,23 +20,25 @@ async function initializeDatabase() {
   console.log('🚀 KupDom Database Initialization\n');
   
   // Get admin credentials
-  let username = process.env.ADMIN_USERNAME;
-  let password = process.env.ADMIN_PASSWORD;
+  const username = process.argv.includes('--username') 
+    ? process.argv[process.argv.indexOf('--username') + 1]
+    : process.env.ADMIN_USERNAME || await question('Enter admin username: ');
   
-  if (!username) {
-    username = await question('Enter admin username (default: kupdom): ') || 'kupdom';
+  const password = process.argv.includes('--password')
+    ? process.argv[process.argv.indexOf('--password') + 1]
+    : process.env.ADMIN_PASSWORD || await question('Enter admin password: ');
+  
+  if (!username || !password) {
+    console.error('❌ Username and password are required');
+    process.exit(1);
   }
   
-  if (!password) {
-    password = await question('Enter admin password: ');
-    if (!password) {
-      console.error('❌ Password is required!');
-      process.exit(1);
-    }
-  }
+  console.log(`📋 Admin username: ${username}`);
+  console.log(`🔐 Password hash created with bcrypt (salt rounds: 10)\n`);
   
+  console.log('Current working directory:', process.cwd());
   const dbPath = path.join(process.cwd(), 'kupdom.db');
-  console.log(`📁 Database path: ${dbPath}`);
+  console.log('Database path:', dbPath);
   
   // Remove existing database if it exists
   const fs = require('fs');
@@ -85,28 +87,44 @@ async function initializeDatabase() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
+        is_admin BOOLEAN DEFAULT FALSE,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
-    // Insert admin user
-    console.log('👤 Creating admin user...');
+    // Add is_admin column to existing users table if it doesn't exist
+    try {
+      db.exec('ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE');
+    } catch (error) {
+      // Column already exists, ignore error
+    }
+
+    // Hash password
     const passwordHash = bcrypt.hashSync(password, 10);
-    db.prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)').run(username, passwordHash);
     
-    console.log('✅ Database initialized successfully!');
-    console.log(`📋 Admin username: ${username}`);
-    console.log(`🔐 Password hash created with bcrypt (salt rounds: 10)`);
+    // Insert admin user
+    const existingUser = db.prepare('SELECT id FROM users WHERE username = ?').get(username);
+    if (existingUser) {
+      // Update existing user to be admin
+      db.prepare('UPDATE users SET password_hash = ?, is_admin = TRUE WHERE username = ?').run(passwordHash, username);
+      console.log(`✅ Updated existing user '${username}' to admin with new password`);
+    } else {
+      // Create new admin user
+      db.prepare('INSERT INTO users (username, password_hash, is_admin) VALUES (?, ?, TRUE)').run(username, passwordHash);
+      console.log(`✅ Created admin user '${username}'`);
+    }
+    
+    console.log('✅ Database initialized successfully!\n');
     
     // Show some stats
-    const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get();
-    const listCount = db.prepare('SELECT COUNT(*) as count FROM shopping_lists').get();
-    const itemCount = db.prepare('SELECT COUNT(*) as count FROM items').get();
+    const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get().count;
+    const listCount = db.prepare('SELECT COUNT(*) as count FROM shopping_lists').get().count;
+    const itemCount = db.prepare('SELECT COUNT(*) as count FROM items').get().count;
     
-    console.log('\n📊 Database Statistics:');
-    console.log(`   Users: ${userCount.count}`);
-    console.log(`   Lists: ${listCount.count}`);
-    console.log(`   Items: ${itemCount.count}`);
+    console.log('📊 Database Statistics:');
+    console.log(`   Users: ${userCount}`);
+    console.log(`   Lists: ${listCount}`);
+    console.log(`   Items: ${itemCount}`);
     
   } catch (error) {
     console.error('❌ Error initializing database:', error.message);

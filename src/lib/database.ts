@@ -37,6 +37,7 @@ export function initializeDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
+      is_admin BOOLEAN DEFAULT FALSE,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
@@ -137,8 +138,9 @@ export function getAllShoppingLists(page: number = 1, limit: number = 10) {
 }
 
 export function verifyAdminCredentials(username: string, password: string): boolean {
-  const user = db.prepare('SELECT password_hash FROM users WHERE username = ?').get(username) as any;
+  const user = db.prepare('SELECT password_hash FROM users WHERE username = ? AND is_admin = TRUE').get(username) as any;
   if (!user) return false;
+  
   return bcrypt.compareSync(password, user.password_hash);
 }
 
