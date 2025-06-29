@@ -305,7 +305,7 @@ export default function ShoppingListPage() {
                   onChange={(e) => setList({ ...list, title: e.target.value })}
                   onBlur={updateTitle}
                   onKeyPress={(e) => e.key === 'Enter' && updateTitle()}
-                  className="text-lg font-semibold text-center bg-transparent border-b border-green-300 focus:outline-none focus:border-green-500"
+                  className="text-lg font-semibold text-center bg-transparent border-b border-green-300 focus:outline-none focus:border-green-500 text-gray-900"
                   autoFocus
                 />
               ) : (
@@ -354,7 +354,7 @@ export default function ShoppingListPage() {
                     type="text"
                     value={getListUrl()}
                     readOnly
-                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 text-sm"
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-900 text-sm"
                   />
                   <button
                     onClick={copyToClipboard}
@@ -388,7 +388,7 @@ export default function ShoppingListPage() {
               onChange={(e) => setNewItemName(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Add new item..."
-              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-transparent bg-white"
+              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
             />
             <button
               onClick={addItem}
@@ -451,7 +451,7 @@ export default function ShoppingListPage() {
                         onChange={(e) => setEditingItemName(e.target.value)}
                         onBlur={saveEditItem}
                         onKeyPress={(e) => e.key === 'Enter' && saveEditItem()}
-                        className="w-full bg-transparent border-b border-green-300 focus:outline-none focus:border-green-500"
+                        className="w-full bg-transparent border-b border-green-300 focus:outline-none focus:border-green-500 text-gray-900"
                         autoFocus
                       />
                     ) : (
@@ -498,15 +498,15 @@ export default function ShoppingListPage() {
           <div className="flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 border-2 border-gray-300 bg-white rounded-full flex items-center justify-center text-gray-400 text-sm">—</div>
-              <span>Pending (default)</span>
+              <span className="text-gray-700">Pending (default)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-green-300 rounded-full flex items-center justify-center text-white text-sm">✓</div>
-              <span>Bought (toggle)</span>
+              <span className="text-gray-700">Bought (toggle)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-red-300 rounded-full flex items-center justify-center text-white text-sm">✗</div>
-              <span>Unavailable (toggle)</span>
+              <span className="text-gray-700">Unavailable (toggle)</span>
             </div>
           </div>
         </div>
