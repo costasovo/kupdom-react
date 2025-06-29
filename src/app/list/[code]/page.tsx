@@ -62,31 +62,48 @@ export default function ShoppingListPage() {
   };
 
   const toggleItemStatus = async (itemId: number, status: 'bought' | 'unavailable') => {
+    if (!list) return;
+
+    // Get current item to check its status
+    const currentItem = list.items.find(item => item.id === itemId);
+    if (!currentItem) return;
+
+    let newStatus: 'pending' | 'bought' | 'unavailable';
+    
+    if (status === 'bought') {
+      newStatus = currentItem.status === 'bought' ? 'pending' : 'bought';
+    } else if (status === 'unavailable') {
+      newStatus = currentItem.status === 'unavailable' ? 'pending' : 'unavailable';
+    } else {
+      newStatus = 'pending';
+    }
+
+    // Optimistic update - immediately update the UI
+    const updatedList = {
+      ...list,
+      items: list.items.map(item =>
+        item.id === itemId ? { ...item, status: newStatus } : item
+      )
+    };
+    setList(updatedList);
+
+    // Make API call in background
     try {
-      // Get current item to check its status
-      const currentItem = list?.items.find(item => item.id === itemId);
-      if (!currentItem) return;
-
-      let newStatus: 'pending' | 'bought' | 'unavailable';
-      
-      if (status === 'bought') {
-        // If currently bought, set to pending. If currently unavailable, set to bought. If pending, set to bought.
-        newStatus = currentItem.status === 'bought' ? 'pending' : 'bought';
-      } else if (status === 'unavailable') {
-        // If currently unavailable, set to pending. If currently bought, set to unavailable. If pending, set to unavailable.
-        newStatus = currentItem.status === 'unavailable' ? 'pending' : 'unavailable';
-      } else {
-        newStatus = 'pending';
-      }
-
-      await fetch(`/api/items/${itemId}`, {
+      const response = await fetch(`/api/items/${itemId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       });
-      fetchList();
+
+      if (!response.ok) {
+        // Revert optimistic update on error
+        console.error('Failed to update item status');
+        setList(list); // Revert to original state
+      }
     } catch (error) {
       console.error('Error updating item status:', error);
+      // Revert optimistic update on error
+      setList(list); // Revert to original state
     }
   };
 
@@ -96,45 +113,98 @@ export default function ShoppingListPage() {
   };
 
   const saveEditItem = async () => {
-    if (!editingItemId || !editingItemName.trim()) return;
+    if (!editingItemId || !editingItemName.trim() || !list) return;
     
+    const originalList = list;
+    const newName = editingItemName.trim();
+
+    // Optimistic update - immediately update the UI
+    const updatedList = {
+      ...list,
+      items: list.items.map(item =>
+        item.id === editingItemId ? { ...item, name: newName } : item
+      )
+    };
+    setList(updatedList);
+    setEditingItemId(null);
+    setEditingItemName('');
+
+    // Make API call in background
     try {
-      await fetch(`/api/items/${editingItemId}`, {
+      const response = await fetch(`/api/items/${editingItemId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: editingItemName.trim() }),
+        body: JSON.stringify({ name: newName }),
       });
-      setEditingItemId(null);
-      setEditingItemName('');
-      fetchList();
+
+      if (!response.ok) {
+        // Revert optimistic update on error
+        console.error('Failed to update item name');
+        setList(originalList); // Revert to original state
+      }
     } catch (error) {
       console.error('Error updating item:', error);
+      // Revert optimistic update on error
+      setList(originalList); // Revert to original state
     }
   };
 
   const deleteItem = async (itemId: number) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+    if (!confirm('Are you sure you want to delete this item?') || !list) return;
     
+    const originalList = list;
+
+    // Optimistic update - immediately remove from UI
+    const updatedList = {
+      ...list,
+      items: list.items.filter(item => item.id !== itemId)
+    };
+    setList(updatedList);
+
+    // Make API call in background
     try {
-      await fetch(`/api/items/${itemId}`, { method: 'DELETE' });
-      fetchList();
+      const response = await fetch(`/api/items/${itemId}`, { method: 'DELETE' });
+      
+      if (!response.ok) {
+        // Revert optimistic update on error
+        console.error('Failed to delete item');
+        setList(originalList); // Revert to original state
+      }
     } catch (error) {
       console.error('Error deleting item:', error);
+      // Revert optimistic update on error
+      setList(originalList); // Revert to original state
     }
   };
 
   const updateTitle = async () => {
     if (!list || !editingTitle) return;
     
+    const originalTitle = list.title;
+    const newTitle = list.title;
+
+    // Optimistic update - immediately update the UI
+    setEditingTitle(false);
+
+    // Make API call in background
     try {
-      await fetch(`/api/lists/${code}/title`, {
+      const response = await fetch(`/api/lists/${code}/title`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: list.title }),
+        body: JSON.stringify({ title: newTitle }),
       });
-      setEditingTitle(false);
+
+      if (!response.ok) {
+        // Revert optimistic update on error
+        console.error('Failed to update title');
+        setList({ ...list, title: originalTitle }); // Revert to original title
+        setEditingTitle(true); // Re-enable editing
+      }
     } catch (error) {
       console.error('Error updating title:', error);
+      // Revert optimistic update on error
+      setList({ ...list, title: originalTitle }); // Revert to original title
+      setEditingTitle(true); // Re-enable editing
     }
   };
 
