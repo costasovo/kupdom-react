@@ -54,10 +54,38 @@ A Next.js-powered React SSR application for managing shopping lists with a simpl
 
 ### Database Setup
 
-The application automatically creates the SQLite database (`kupdom.db`) and required tables on first run. The admin user is also automatically created with:
+The application uses SQLite for data storage. To set up the database securely:
 
-- **Username**: `kupdom`
-- **Password**: `gZ43vJrbV3Kqt4Pb8nfUipARJL6dpxf3`
+1. **Initialize the database with admin credentials**
+   ```bash
+   npm run init-db
+   ```
+   
+   This will prompt you for:
+   - Admin username (default: kupdom)
+   - Admin password (required)
+   
+   **Alternative methods:**
+   ```bash
+   # Using command line arguments
+   npm run init-db -- --username admin --password mypassword
+   
+   # Using environment variables
+   ADMIN_USERNAME=admin ADMIN_PASSWORD=mypassword npm run init-db
+   ```
+
+2. **Database file location**
+   The SQLite database (`kupdom.db`) will be created in the project root directory.
+
+3. **Security note**
+   The database initialization script creates a secure bcrypt hash of your password. 
+   No plain text passwords are stored in the database or source code.
+
+4. **Reset database (if needed)**
+   ```bash
+   npm run init-db
+   ```
+   The script will ask for confirmation before overwriting an existing database.
 
 ## Usage
 
@@ -188,7 +216,7 @@ The SQLite database file (`kupdom.db`) is created in the project root directory.
 
 ## TODOs
 
-- Fix that password is in plain text in database.ts
+- ✅ Fix that password is in plain text in database.ts (implemented secure init-db script)
 - Explore realtime updates of list via websockets
 - Add functionality for links that generate new prefilled list
 - Remove pending from legend on the lists page

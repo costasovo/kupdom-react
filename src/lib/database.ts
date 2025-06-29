@@ -5,7 +5,7 @@ import path from 'path';
 const dbPath = path.join(process.cwd(), 'kupdom.db');
 const db = new Database(dbPath);
 
-// Initialize database tables
+// Initialize database tables (without admin user creation)
 export function initializeDatabase() {
   // Create shopping_lists table
   db.exec(`
@@ -41,12 +41,8 @@ export function initializeDatabase() {
     )
   `);
 
-  // Insert admin user if not exists
-  const adminExists = db.prepare('SELECT id FROM users WHERE username = ?').get('kupdom');
-  if (!adminExists) {
-    const passwordHash = bcrypt.hashSync('gZ43vJrbV3Kqt4Pb8nfUipARJL6dpxf3', 10);
-    db.prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)').run('kupdom', passwordHash);
-  }
+  // Note: Admin user creation is now handled by the init-db.js script
+  // This prevents hardcoded passwords in the source code
 }
 
 // Generate a random 6-character code (alphanumeric)
