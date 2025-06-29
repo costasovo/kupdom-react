@@ -59,12 +59,28 @@ export default function ShoppingListPage() {
     }
   };
 
-  const updateItemStatus = async (itemId: number, status: 'pending' | 'bought' | 'unavailable') => {
+  const toggleItemStatus = async (itemId: number, status: 'bought' | 'unavailable') => {
     try {
+      // Get current item to check its status
+      const currentItem = list?.items.find(item => item.id === itemId);
+      if (!currentItem) return;
+
+      let newStatus: 'pending' | 'bought' | 'unavailable';
+      
+      if (status === 'bought') {
+        // If currently bought, set to pending. If currently unavailable, set to bought. If pending, set to bought.
+        newStatus = currentItem.status === 'bought' ? 'pending' : 'bought';
+      } else if (status === 'unavailable') {
+        // If currently unavailable, set to pending. If currently bought, set to unavailable. If pending, set to unavailable.
+        newStatus = currentItem.status === 'unavailable' ? 'pending' : 'unavailable';
+      } else {
+        newStatus = 'pending';
+      }
+
       await fetch(`/api/items/${itemId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status: newStatus }),
       });
       fetchList();
     } catch (error) {
@@ -216,7 +232,7 @@ export default function ShoppingListPage() {
         </div>
 
         {/* Items List */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           {list.items.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <div className="text-4xl mb-4">🛒</div>
@@ -227,35 +243,33 @@ export default function ShoppingListPage() {
               <div
                 key={item.id}
                 className={`bg-white rounded-lg shadow-sm p-4 border-l-4 ${
-                  item.status === 'bought' ? 'border-green-400 bg-green-50' :
-                  item.status === 'unavailable' ? 'border-red-400 bg-red-50' :
+                  item.status === 'bought' ? 'border-green-300 bg-green-50' :
+                  item.status === 'unavailable' ? 'border-red-300 bg-red-50' :
                   'border-gray-200'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  {/* Status Buttons */}
-                  <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-4">
+                  {/* Status Buttons - Toggle Logic */}
+                  <div className="flex gap-2">
                     <button
-                      onClick={() => updateItemStatus(item.id, 'pending')}
-                      className={`w-6 h-6 rounded-full border-2 ${
-                        item.status === 'pending' ? 'bg-gray-400 border-gray-400' : 'border-gray-300'
-                      }`}
-                    />
-                    <button
-                      onClick={() => updateItemStatus(item.id, 'bought')}
-                      className={`w-6 h-6 rounded-full border-2 ${
-                        item.status === 'bought' ? 'bg-green-400 border-green-400' : 'border-green-300'
+                      onClick={() => toggleItemStatus(item.id, 'bought')}
+                      className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-colors ${
+                        item.status === 'bought' 
+                          ? 'bg-green-300 border-green-300 text-white' 
+                          : 'border-green-300 bg-white text-green-300 hover:border-green-400'
                       }`}
                     >
-                      {item.status === 'bought' && <span className="text-white text-xs">✓</span>}
+                      <span className="text-lg">✓</span>
                     </button>
                     <button
-                      onClick={() => updateItemStatus(item.id, 'unavailable')}
-                      className={`w-6 h-6 rounded-full border-2 ${
-                        item.status === 'unavailable' ? 'bg-red-400 border-red-400' : 'border-red-300'
+                      onClick={() => toggleItemStatus(item.id, 'unavailable')}
+                      className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-colors ${
+                        item.status === 'unavailable' 
+                          ? 'bg-red-300 border-red-300 text-white' 
+                          : 'border-red-300 bg-white text-red-300 hover:border-red-400'
                       }`}
                     >
-                      {item.status === 'unavailable' && <span className="text-white text-xs">✗</span>}
+                      <span className="text-lg">✗</span>
                     </button>
                   </div>
 
@@ -285,16 +299,16 @@ export default function ShoppingListPage() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-1">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => startEditItem(item)}
-                      className="text-gray-400 hover:text-green-600 p-1"
+                      className="text-gray-400 hover:text-green-600 p-2 text-xl"
                     >
                       ✏️
                     </button>
                     <button
                       onClick={() => deleteItem(item.id)}
-                      className="text-gray-400 hover:text-red-600 p-1"
+                      className="text-gray-400 hover:text-red-600 p-2 text-xl"
                     >
                       🗑️
                     </button>
@@ -308,18 +322,18 @@ export default function ShoppingListPage() {
         {/* Status Legend */}
         <div className="mt-8 bg-white rounded-lg shadow-sm p-4 border border-gray-100">
           <h3 className="font-semibold mb-3 text-gray-700">Status Legend:</h3>
-          <div className="flex flex-wrap gap-4 text-sm">
+          <div className="flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-400 rounded-full"></div>
-              <span>Pending</span>
+              <div className="w-6 h-6 border-2 border-gray-300 bg-white rounded-full flex items-center justify-center text-gray-400 text-sm">—</div>
+              <span>Pending (default)</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-400 rounded-full"></div>
-              <span>Bought</span>
+              <div className="w-6 h-6 bg-green-300 rounded-full flex items-center justify-center text-white text-sm">✓</div>
+              <span>Bought (toggle)</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-400 rounded-full"></div>
-              <span>Unavailable</span>
+              <div className="w-6 h-6 bg-red-300 rounded-full flex items-center justify-center text-white text-sm">✗</div>
+              <span>Unavailable (toggle)</span>
             </div>
           </div>
         </div>
