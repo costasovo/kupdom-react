@@ -16,6 +16,8 @@ export default function ShoppingListPage() {
   const [editingTitle, setEditingTitle] = useState(false);
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
   const [editingItemName, setEditingItemName] = useState('');
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     fetchList();
@@ -142,6 +144,21 @@ export default function ShoppingListPage() {
     }
   };
 
+  const copyToClipboard = async () => {
+    const listUrl = `${window.location.origin}/list/${code}`;
+    try {
+      await navigator.clipboard.writeText(listUrl);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+    }
+  };
+
+  const getListUrl = () => {
+    return `${window.location.origin}/list/${code}`;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -203,10 +220,64 @@ export default function ShoppingListPage() {
               )}
               <p className="text-sm text-gray-500 font-mono">Code: {list.code}</p>
             </div>
-            <div className="w-8"></div>
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="text-green-600 hover:text-green-700 p-2"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-800">Share List</h2>
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  List Link
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={getListUrl()}
+                    readOnly
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-600 text-sm"
+                  />
+                  <button
+                    onClick={copyToClipboard}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      copySuccess
+                        ? 'bg-green-200 text-green-800'
+                        : 'bg-green-200 text-green-800 hover:bg-green-300'
+                    }`}
+                  >
+                    {copySuccess ? 'Copied!' : 'Copy'}
+                  </button>
+                </div>
+              </div>
+              
+              <div className="text-xs text-gray-500">
+                Share this link with others to let them view and edit this shopping list.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-6">
@@ -302,15 +373,19 @@ export default function ShoppingListPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => startEditItem(item)}
-                      className="text-gray-400 hover:text-green-600 p-2 text-xl"
+                      className="text-gray-400 hover:text-green-600 p-2 transition-colors"
                     >
-                      ✏️
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                      </svg>
                     </button>
                     <button
                       onClick={() => deleteItem(item.id)}
-                      className="text-gray-400 hover:text-red-600 p-2 text-xl"
+                      className="text-gray-400 hover:text-red-600 p-2 transition-colors"
                     >
-                      🗑️
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
                     </button>
                   </div>
                 </div>
