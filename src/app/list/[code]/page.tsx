@@ -497,10 +497,6 @@ export default function ShoppingListPage() {
           <h3 className="font-semibold mb-3 text-gray-700">Status Legend:</h3>
           <div className="flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 border-2 border-gray-300 bg-white rounded-full flex items-center justify-center text-gray-400 text-sm">—</div>
-              <span className="text-gray-700">Pending (default)</span>
-            </div>
-            <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-green-300 rounded-full flex items-center justify-center text-white text-sm">✓</div>
               <span className="text-gray-700">Bought (toggle)</span>
             </div>
