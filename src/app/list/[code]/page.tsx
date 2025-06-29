@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ShoppingListWithItems, ShoppingItem } from '@/types';
+import { useSocket } from '@/lib/useSocket';
+import { ItemUpdateEvent, TitleUpdateEvent, UserActivityEvent } from '@/lib/socket';
 
 export default function ShoppingListPage() {
   const params = useParams();
@@ -18,6 +20,80 @@ export default function ShoppingListPage() {
   const [editingItemName, setEditingItemName] = useState('');
   const [showShareModal, setShowShareModal] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [activeUsers, setActiveUsers] = useState<string[]>([]);
+  const [realtimeStatus, setRealtimeStatus] = useState<'connected' | 'connecting' | 'disconnected'>('disconnected');
+
+  // Socket.io real-time updates
+  const { emitItemUpdate, emitTitleUpdate, emitUserActivity, isConnected } = useSocket({
+    listCode: code,
+    onItemUpdate: (event: ItemUpdateEvent) => {
+      console.log('Received item update:', event);
+      handleRemoteItemUpdate(event);
+    },
+    onTitleUpdate: (event: TitleUpdateEvent) => {
+      console.log('Received title update:', event);
+      handleRemoteTitleUpdate(event);
+    },
+    onUserActivity: (event: UserActivityEvent) => {
+      console.log('Received user activity:', event);
+      handleRemoteUserActivity(event);
+    },
+    onUserJoined: (event) => {
+      console.log('User joined:', event);
+      setActiveUsers(prev => [...prev, event.socketId]);
+    }
+  });
+
+  // Update realtime status when connection changes
+  useEffect(() => {
+    setRealtimeStatus(isConnected ? 'connected' : 'connecting');
+  }, [isConnected]);
+
+  // Handle remote item updates
+  const handleRemoteItemUpdate = (event: ItemUpdateEvent) => {
+    if (!list) return;
+
+    switch (event.action) {
+      case 'added':
+        if (event.item) {
+          setList(prev => prev ? {
+            ...prev,
+            items: [...prev.items, event.item]
+          } : null);
+        }
+        break;
+      case 'updated':
+        if (event.item) {
+          setList(prev => prev ? {
+            ...prev,
+            items: prev.items.map(item => 
+              item.id === parseInt(event.itemId) ? event.item : item
+            )
+          } : null);
+        }
+        break;
+      case 'deleted':
+        setList(prev => prev ? {
+          ...prev,
+          items: prev.items.filter(item => item.id !== parseInt(event.itemId))
+        } : null);
+        break;
+    }
+  };
+
+  // Handle remote title updates
+  const handleRemoteTitleUpdate = (event: TitleUpdateEvent) => {
+    setList(prev => prev ? {
+      ...prev,
+      title: event.title
+    } : null);
+  };
+
+  // Handle remote user activity
+  const handleRemoteUserActivity = (event: UserActivityEvent) => {
+    // You can implement user presence indicators here
+    console.log(`User ${event.socketId} is ${event.action}`, event.itemId ? `on item ${event.itemId}` : '');
+  };
 
   useEffect(() => {
     fetchList();
@@ -64,6 +140,13 @@ export default function ShoppingListPage() {
     setList(updatedList);
     setNewItemName(''); // Clear input immediately
 
+    // Emit real-time update
+    emitItemUpdate({
+      itemId: tempId.toString(),
+      action: 'added',
+      item: tempItem
+    });
+
     // Make API call in background
     try {
       const response = await fetch(`/api/lists/${code}/items`, {
@@ -79,8 +162,16 @@ export default function ShoppingListPage() {
         console.error('Failed to add item');
         setList(list); // Revert to original state
         setNewItemName(itemName); // Restore the input text
+      } else {
+        // Update with real item data from server
+        const newItem = await response.json();
+        setList(prev => prev ? {
+          ...prev,
+          items: prev.items.map(item => 
+            item.id === tempId ? newItem : item
+          )
+        } : null);
       }
-      // If successful, keep the optimistic update - the item is already in the UI
     } catch (error) {
       console.error('Error adding item:', error);
       // Revert optimistic update on error
@@ -115,6 +206,13 @@ export default function ShoppingListPage() {
     };
     setList(updatedList);
 
+    // Emit real-time update
+    emitItemUpdate({
+      itemId: itemId.toString(),
+      action: 'updated',
+      item: { ...currentItem, status: newStatus }
+    });
+
     // Make API call in background
     try {
       const response = await fetch(`/api/items/${itemId}`, {
@@ -138,6 +236,7 @@ export default function ShoppingListPage() {
   const startEditItem = (item: ShoppingItem) => {
     setEditingItemId(item.id);
     setEditingItemName(item.name);
+    emitUserActivity({ action: 'editing', itemId: item.id.toString() });
   };
 
   const saveEditItem = async () => {
@@ -156,6 +255,16 @@ export default function ShoppingListPage() {
     setList(updatedList);
     setEditingItemId(null);
     setEditingItemName('');
+
+    // Emit real-time update
+    const updatedItem = list.items.find(item => item.id === editingItemId);
+    if (updatedItem) {
+      emitItemUpdate({
+        itemId: editingItemId.toString(),
+        action: 'updated',
+        item: { ...updatedItem, name: newName }
+      });
+    }
 
     // Make API call in background
     try {
@@ -189,6 +298,12 @@ export default function ShoppingListPage() {
     };
     setList(updatedList);
 
+    // Emit real-time update
+    emitItemUpdate({
+      itemId: itemId.toString(),
+      action: 'deleted'
+    });
+
     // Make API call in background
     try {
       const response = await fetch(`/api/items/${itemId}`, { method: 'DELETE' });
@@ -213,6 +328,9 @@ export default function ShoppingListPage() {
 
     // Optimistic update - immediately update the UI
     setEditingTitle(false);
+
+    // Emit real-time update
+    emitTitleUpdate(newTitle);
 
     // Make API call in background
     try {
@@ -316,7 +434,27 @@ export default function ShoppingListPage() {
                   {list.title}
                 </h1>
               )}
-              <p className="text-sm text-gray-500 font-mono">Code: {list.code}</p>
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <p className="text-sm text-gray-500 font-mono">Code: {list.code}</p>
+                {/* Real-time status indicator */}
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${
+                    realtimeStatus === 'connected' ? 'bg-green-500' :
+                    realtimeStatus === 'connecting' ? 'bg-yellow-500' :
+                    'bg-red-500'
+                  }`}></div>
+                  <span className="text-sm text-gray-500">
+                    {realtimeStatus === 'connected' ? 'Live' :
+                     realtimeStatus === 'connecting' ? 'Connecting...' :
+                     'Offline'}
+                  </span>
+                  {activeUsers.length > 0 && (
+                    <span className="text-sm text-gray-500">
+                      • {activeUsers.length} active
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
             <button
               onClick={() => setShowShareModal(true)}
