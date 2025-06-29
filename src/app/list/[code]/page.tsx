@@ -44,7 +44,9 @@ export default function ShoppingListPage() {
     try {
       const response = await fetch(`/api/lists/${code}/items`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: newItemName.trim() }),
       });
 
@@ -126,9 +128,9 @@ export default function ShoppingListPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading shopping list...</p>
         </div>
       </div>
@@ -137,13 +139,13 @@ export default function ShoppingListPage() {
 
   if (error || !list) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Oops!</h1>
           <p className="text-gray-600 mb-6">{error || 'Shopping list not found'}</p>
           <button
             onClick={() => router.push('/')}
-            className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+            className="bg-green-200 text-green-800 px-6 py-2 rounded-lg hover:bg-green-300"
           >
             Go Home
           </button>
@@ -153,14 +155,14 @@ export default function ShoppingListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-2xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <button
               onClick={() => router.push('/')}
-              className="text-indigo-600 hover:text-indigo-800"
+              className="text-green-600 hover:text-green-700"
             >
               ← Back
             </button>
@@ -172,12 +174,12 @@ export default function ShoppingListPage() {
                   onChange={(e) => setList({ ...list, title: e.target.value })}
                   onBlur={updateTitle}
                   onKeyPress={(e) => e.key === 'Enter' && updateTitle()}
-                  className="text-lg font-semibold text-center bg-transparent border-b border-indigo-300 focus:outline-none focus:border-indigo-600"
+                  className="text-lg font-semibold text-center bg-transparent border-b border-green-300 focus:outline-none focus:border-green-500"
                   autoFocus
                 />
               ) : (
                 <h1
-                  className="text-lg font-semibold cursor-pointer hover:text-indigo-600"
+                  className="text-lg font-semibold cursor-pointer hover:text-green-600"
                   onClick={() => setEditingTitle(true)}
                 >
                   {list.title}
@@ -193,7 +195,7 @@ export default function ShoppingListPage() {
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Add New Item */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-6 border border-gray-100">
           <div className="flex gap-2">
             <input
               type="text"
@@ -201,12 +203,12 @@ export default function ShoppingListPage() {
               onChange={(e) => setNewItemName(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Add new item..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-transparent bg-white"
             />
             <button
               onClick={addItem}
               disabled={!newItemName.trim()}
-              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="bg-green-200 text-green-800 px-4 py-2 rounded-lg hover:bg-green-300 disabled:bg-green-100 disabled:cursor-not-allowed"
             >
               Add
             </button>
@@ -225,9 +227,9 @@ export default function ShoppingListPage() {
               <div
                 key={item.id}
                 className={`bg-white rounded-lg shadow-sm p-4 border-l-4 ${
-                  item.status === 'bought' ? 'border-green-500 bg-green-50' :
-                  item.status === 'unavailable' ? 'border-red-500 bg-red-50' :
-                  'border-gray-300'
+                  item.status === 'bought' ? 'border-green-400 bg-green-50' :
+                  item.status === 'unavailable' ? 'border-red-400 bg-red-50' :
+                  'border-gray-200'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -236,13 +238,13 @@ export default function ShoppingListPage() {
                     <button
                       onClick={() => updateItemStatus(item.id, 'pending')}
                       className={`w-6 h-6 rounded-full border-2 ${
-                        item.status === 'pending' ? 'bg-gray-500 border-gray-500' : 'border-gray-300'
+                        item.status === 'pending' ? 'bg-gray-400 border-gray-400' : 'border-gray-300'
                       }`}
                     />
                     <button
                       onClick={() => updateItemStatus(item.id, 'bought')}
                       className={`w-6 h-6 rounded-full border-2 ${
-                        item.status === 'bought' ? 'bg-green-500 border-green-500' : 'border-green-300'
+                        item.status === 'bought' ? 'bg-green-400 border-green-400' : 'border-green-300'
                       }`}
                     >
                       {item.status === 'bought' && <span className="text-white text-xs">✓</span>}
@@ -250,7 +252,7 @@ export default function ShoppingListPage() {
                     <button
                       onClick={() => updateItemStatus(item.id, 'unavailable')}
                       className={`w-6 h-6 rounded-full border-2 ${
-                        item.status === 'unavailable' ? 'bg-red-500 border-red-500' : 'border-red-300'
+                        item.status === 'unavailable' ? 'bg-red-400 border-red-400' : 'border-red-300'
                       }`}
                     >
                       {item.status === 'unavailable' && <span className="text-white text-xs">✗</span>}
@@ -266,7 +268,7 @@ export default function ShoppingListPage() {
                         onChange={(e) => setEditingItemName(e.target.value)}
                         onBlur={saveEditItem}
                         onKeyPress={(e) => e.key === 'Enter' && saveEditItem()}
-                        className="w-full bg-transparent border-b border-indigo-300 focus:outline-none focus:border-indigo-600"
+                        className="w-full bg-transparent border-b border-green-300 focus:outline-none focus:border-green-500"
                         autoFocus
                       />
                     ) : (
@@ -286,7 +288,7 @@ export default function ShoppingListPage() {
                   <div className="flex gap-1">
                     <button
                       onClick={() => startEditItem(item)}
-                      className="text-gray-400 hover:text-indigo-600 p-1"
+                      className="text-gray-400 hover:text-green-600 p-1"
                     >
                       ✏️
                     </button>
@@ -304,19 +306,19 @@ export default function ShoppingListPage() {
         </div>
 
         {/* Status Legend */}
-        <div className="mt-8 bg-white rounded-lg shadow-sm p-4">
+        <div className="mt-8 bg-white rounded-lg shadow-sm p-4 border border-gray-100">
           <h3 className="font-semibold mb-3 text-gray-700">Status Legend:</h3>
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-gray-500 rounded-full"></div>
+              <div className="w-4 h-4 bg-gray-400 rounded-full"></div>
               <span>Pending</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+              <div className="w-4 h-4 bg-green-400 rounded-full"></div>
               <span>Bought</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+              <div className="w-4 h-4 bg-red-400 rounded-full"></div>
               <span>Unavailable</span>
             </div>
           </div>

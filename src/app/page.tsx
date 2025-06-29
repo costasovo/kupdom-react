@@ -2,12 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function HomePage() {
   const [listCode, setListCode] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const createNewList = async () => {
@@ -48,7 +47,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
       {/* Admin Link */}
       <div className="absolute top-4 right-4">
         <button
@@ -59,31 +58,32 @@ export default function HomePage() {
         </button>
       </div>
 
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
         {/* App Logo/Title */}
-        <h1 className="text-4xl font-bold text-indigo-600 mb-2">KupDom</h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-2">KupDom</h1>
         <p className="text-gray-600 mb-8">Your Smart Shopping Companion</p>
 
-        {/* AI Comic Image Placeholder */}
-        <div className="mb-8 p-6 bg-gradient-to-r from-orange-100 to-yellow-100 rounded-xl border-2 border-dashed border-orange-300">
-          <div className="text-6xl mb-2">🛒</div>
-          <p className="text-sm text-orange-700 font-medium">
-            AI Comic: Man with shopping bag heading to grocery store
-          </p>
-          <p className="text-xs text-orange-600 mt-1">
-            (Funny cartoon style illustration)
-          </p>
+        {/* Man Image */}
+        <div className="mb-8 flex justify-center">
+          <Image
+            src="/man.png"
+            alt="Man with shopping bag heading to grocery store"
+            width={200}
+            height={200}
+            className="rounded-lg"
+            priority
+          />
         </div>
 
         {/* Create New List Button */}
         <button
           onClick={createNewList}
           disabled={isCreating}
-          className="w-full mb-6 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center"
+          className="w-full mb-6 bg-green-200 hover:bg-green-300 disabled:bg-green-100 text-green-800 font-semibold py-3 px-6 rounded-xl transition-colors duration-200 flex items-center justify-center"
         >
           {isCreating ? (
             <>
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600 mr-2"></div>
               Creating...
             </>
           ) : (
@@ -94,7 +94,7 @@ export default function HomePage() {
         {/* Divider */}
         <div className="relative mb-6">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
+            <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-2 bg-white text-gray-500">or</span>
@@ -115,14 +115,14 @@ export default function HomePage() {
               onKeyPress={handleKeyPress}
               placeholder="e.g., ABC123"
               maxLength={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-center text-lg font-mono tracking-wider"
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-300 focus:border-transparent text-center text-lg font-mono tracking-wider bg-white"
             />
           </div>
           
           <button
             onClick={goToList}
-            disabled={!listCode.trim() || isLoading}
-            className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-200"
+            disabled={!listCode.trim()}
+            className="w-full bg-amber-200 hover:bg-amber-300 disabled:bg-amber-100 text-amber-800 font-semibold py-3 px-6 rounded-xl transition-colors duration-200"
           >
             Go to List
           </button>
