@@ -41,23 +41,51 @@ export default function ShoppingListPage() {
   };
 
   const addItem = async () => {
-    if (!newItemName.trim()) return;
+    if (!newItemName.trim() || !list) return;
     
+    const itemName = newItemName.trim();
+    const tempId = Date.now(); // Temporary ID for optimistic update
+    
+    // Create a temporary item for optimistic update
+    const tempItem: ShoppingItem = {
+      id: tempId,
+      name: itemName,
+      status: 'pending',
+      list_id: list.id,
+      position: list.items.length + 1, // Add at the end
+      created_at: new Date().toISOString()
+    };
+
+    // Optimistic update - immediately add to UI
+    const updatedList = {
+      ...list,
+      items: [...list.items, tempItem]
+    };
+    setList(updatedList);
+    setNewItemName(''); // Clear input immediately
+
+    // Make API call in background
     try {
       const response = await fetch(`/api/lists/${code}/items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name: newItemName.trim() }),
+        body: JSON.stringify({ name: itemName }),
       });
 
-      if (response.ok) {
-        setNewItemName('');
-        fetchList();
+      if (!response.ok) {
+        // Revert optimistic update on error
+        console.error('Failed to add item');
+        setList(list); // Revert to original state
+        setNewItemName(itemName); // Restore the input text
       }
+      // If successful, keep the optimistic update - the item is already in the UI
     } catch (error) {
       console.error('Error adding item:', error);
+      // Revert optimistic update on error
+      setList(list); // Revert to original state
+      setNewItemName(itemName); // Restore the input text
     }
   };
 

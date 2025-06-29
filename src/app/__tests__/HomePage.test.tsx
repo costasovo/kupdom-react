@@ -24,11 +24,12 @@ describe('HomePage', () => {
     expect(screen.getByText('Your Smart Shopping Companion')).toBeInTheDocument()
   })
 
-  it('renders AI comic image placeholder', () => {
+  it('renders man image', () => {
     render(<HomePage />)
     
-    expect(screen.getByText('AI Comic: Man with shopping bag heading to grocery store')).toBeInTheDocument()
-    expect(screen.getByText('(Funny cartoon style illustration)')).toBeInTheDocument()
+    const image = screen.getByAltText('Man with shopping bag heading to grocery store')
+    expect(image).toBeInTheDocument()
+    expect(image).toHaveAttribute('src', expect.stringContaining('man.png'))
   })
 
   it('renders create new list button', () => {
