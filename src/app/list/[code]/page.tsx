@@ -310,7 +310,7 @@ export default function ShoppingListPage() {
                 />
               ) : (
                 <h1
-                  className="text-lg font-semibold cursor-pointer hover:text-green-600"
+                  className="text-lg font-semibold cursor-pointer hover:text-green-600 text-gray-900"
                   onClick={() => setEditingTitle(true)}
                 >
                   {list.title}
