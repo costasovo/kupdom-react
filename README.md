@@ -191,6 +191,9 @@ The SQLite database file (`kupdom.db`) is created in the project root directory.
 - Fix that password is in plain text in database.ts
 - Explore realtime updates of list via websockets
 - Add functionality for links that generate new prefilled list
+- Remove pending from legend on the lists page
+- Add autocomplete for basic groceries
+- Add czech/english language switch
 
 ## License
 
