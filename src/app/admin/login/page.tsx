@@ -7,13 +7,11 @@ export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
       const response = await fetch('/api/admin/login', {
@@ -26,11 +24,7 @@ export default function AdminLoginPage() {
 
       if (response.ok) {
         router.push('/admin/dashboard');
-      } else {
-        setError('Invalid credentials');
       }
-    } catch (error) {
-      setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -74,12 +68,6 @@ export default function AdminLoginPage() {
               placeholder="Enter password"
             />
           </div>
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-red-700 text-sm">{error}</p>
-            </div>
-          )}
 
           <button
             type="submit"

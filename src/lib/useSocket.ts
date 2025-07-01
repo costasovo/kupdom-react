@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { getSocket, disconnectSocket, ItemUpdateEvent, TitleUpdateEvent, UserActivityEvent, UserJoinedEvent } from './socket';
+import type { Socket } from 'socket.io-client';
+import { getSocket, ItemUpdateEvent, TitleUpdateEvent, UserActivityEvent, UserJoinedEvent } from './socket';
 
 interface UseSocketOptions {
   listCode: string;
@@ -16,7 +17,7 @@ export const useSocket = ({
   onUserActivity,
   onUserJoined
 }: UseSocketOptions) => {
-  const socketRef = useRef<any>(null);
+  const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const hasJoinedRef = useRef(false);
 
@@ -32,7 +33,7 @@ export const useSocket = ({
   const emitItemUpdate = useCallback((data: {
     itemId: string;
     action: 'added' | 'updated' | 'deleted';
-    item?: any;
+    item?: unknown;
   }) => {
     if (socketRef.current && isConnected) {
       socketRef.current.emit('item-updated', {

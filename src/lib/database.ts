@@ -78,7 +78,7 @@ export function getShoppingListByCode(code: string) {
     SELECT id, code, title, created_at, updated_at 
     FROM shopping_lists 
     WHERE code = ?
-  `).get(code) as any;
+  `).get(code) as unknown;
 }
 
 export function updateShoppingListTitle(id: number, title: string) {
@@ -96,11 +96,11 @@ export function getItemsByListId(listId: number) {
     FROM items 
     WHERE list_id = ? 
     ORDER BY position ASC
-  `).all(listId) as any[];
+  `).all(listId) as unknown[];
 }
 
 export function addItem(listId: number, name: string) {
-  const maxPosition = db.prepare('SELECT MAX(position) as max_pos FROM items WHERE list_id = ?').get(listId) as any;
+  const maxPosition = db.prepare('SELECT MAX(position) as max_pos FROM items WHERE list_id = ?').get(listId) as { max_pos: number | null };
   const newPosition = (maxPosition?.max_pos || 0) + 1;
   
   return db.prepare(`
@@ -130,15 +130,15 @@ export function getAllShoppingLists(page: number = 1, limit: number = 10) {
     FROM shopping_lists 
     ORDER BY created_at DESC 
     LIMIT ? OFFSET ?
-  `).all(limit, offset) as any[];
+  `).all(limit, offset) as unknown[];
   
-  const total = db.prepare('SELECT COUNT(*) as count FROM shopping_lists').get() as any;
+  const total = db.prepare('SELECT COUNT(*) as count FROM shopping_lists').get() as { count: number };
   
   return { lists, total: total.count, page, limit };
 }
 
 export function verifyAdminCredentials(username: string, password: string): boolean {
-  const user = db.prepare('SELECT password_hash FROM users WHERE username = ? AND is_admin = TRUE').get(username) as any;
+  const user = db.prepare('SELECT password_hash FROM users WHERE username = ? AND is_admin = TRUE').get(username) as { password_hash: string } | undefined;
   if (!user) return false;
   
   return bcrypt.compareSync(password, user.password_hash);

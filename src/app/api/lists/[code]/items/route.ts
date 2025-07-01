@@ -30,7 +30,7 @@ export async function POST(
       SELECT id, name, status, position, created_at, list_id
       FROM items 
       WHERE id = ?
-    `).get(result.lastInsertRowid) as any;
+    `).get(result.lastInsertRowid) as unknown;
     
     return NextResponse.json(newItem);
   } catch (error) {

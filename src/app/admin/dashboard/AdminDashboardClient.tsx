@@ -16,33 +16,32 @@ export default function AdminDashboardClient() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/admin/lists?page=${currentPage}&limit=10`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setLists(data.lists);
+          setTotalPages(data.totalPages);
+        } else {
+          console.error('Failed to load lists');
+        }
+      } catch {
+        console.error('Failed to load lists');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (currentPage > 0) {
       fetchLists();
     }
   }, [currentPage]);
-
-  const fetchLists = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/admin/lists?page=${currentPage}&limit=10`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        setLists(data.lists);
-        setTotalPages(data.totalPages);
-      } else {
-        setError('Failed to load lists');
-      }
-    } catch (error) {
-      setError('Failed to load lists');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleLogout = async () => {
     try {
@@ -53,8 +52,8 @@ export default function AdminDashboardClient() {
       if (response.ok) {
         router.push('/admin/login');
       }
-    } catch (error) {
-      console.error('Logout failed:', error);
+    } catch {
+      console.error('Logout failed');
     }
   };
 
@@ -74,23 +73,6 @@ export default function AdminDashboardClient() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Error</h1>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button
-            onClick={() => router.push('/admin/login')}
-            className="bg-green-200 text-green-800 px-6 py-2 rounded-lg hover:bg-green-300 cursor-pointer"
-          >
-            Back to Login
-          </button>
         </div>
       </div>
     );

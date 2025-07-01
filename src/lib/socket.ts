@@ -26,17 +26,11 @@ export const initializeSocket = () => {
       // console.log('Disconnected from Socket.io server');
     });
     
-    socket.on('connect_error', (error) => {
-      // console.error('Socket connection error:', error);
-    });
+    socket.on('connect_error', () => {});
 
-    socket.on('reconnect', (attemptNumber) => {
-      // console.log(`Reconnected to Socket.io server after ${attemptNumber} attempts`);
-    });
+    socket.on('reconnect', () => {});
 
-    socket.on('reconnect_error', (error) => {
-      // console.error('Socket reconnection error:', error);
-    });
+    socket.on('reconnect_error', () => {});
   }
   
   return socket;
@@ -61,7 +55,7 @@ export interface ItemUpdateEvent {
   listCode: string;
   itemId: string;
   action: 'added' | 'updated' | 'deleted';
-  item?: any;
+  item?: unknown;
   timestamp: string;
 }
 

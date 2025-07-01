@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { ShoppingListWithItems, ShoppingItem } from '@/types';
 import { useSocket } from '@/lib/useSocket';
-import { ItemUpdateEvent, TitleUpdateEvent, UserActivityEvent } from '@/lib/socket';
+import { ItemUpdateEvent, TitleUpdateEvent } from '@/lib/socket';
 
 export default function ShoppingListPage() {
   const params = useParams();
@@ -16,7 +16,6 @@ export default function ShoppingListPage() {
   
   const [list, setList] = useState<ShoppingListWithItems | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [newItemName, setNewItemName] = useState('');
   const [editingTitle, setEditingTitle] = useState(false);
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
@@ -27,16 +26,13 @@ export default function ShoppingListPage() {
   const [realtimeStatus, setRealtimeStatus] = useState<'connected' | 'connecting' | 'disconnected'>('disconnected');
 
   // Socket.io real-time updates
-  const { emitItemUpdate, emitTitleUpdate, emitUserActivity, isConnected } = useSocket({
+  const { emitItemUpdate, emitTitleUpdate, isConnected } = useSocket({
     listCode: code,
     onItemUpdate: (event: ItemUpdateEvent) => {
       handleRemoteItemUpdate(event);
     },
     onTitleUpdate: (event: TitleUpdateEvent) => {
       handleRemoteTitleUpdate(event);
-    },
-    onUserActivity: (event: UserActivityEvent) => {
-      handleRemoteUserActivity(event);
     },
     onUserJoined: (event) => {
       setActiveUsers(prev => [...prev, event.socketId]);
@@ -57,7 +53,7 @@ export default function ShoppingListPage() {
         if (event.item) {
           setList(prev => prev ? {
             ...prev,
-            items: [...prev.items, event.item]
+            items: [...prev.items, event.item] as ShoppingItem[]
           } : null);
         }
         break;
@@ -67,14 +63,14 @@ export default function ShoppingListPage() {
             ...prev,
             items: prev.items.map(item => 
               item.id === parseInt(event.itemId) ? event.item : item
-            )
+            ) as ShoppingItem[]
           } : null);
         }
         break;
       case 'deleted':
         setList(prev => prev ? {
           ...prev,
-          items: prev.items.filter(item => item.id !== parseInt(event.itemId))
+          items: prev.items.filter(item => item.id !== parseInt(event.itemId)) as ShoppingItem[]
         } : null);
         break;
     }
@@ -88,30 +84,22 @@ export default function ShoppingListPage() {
     } : null);
   };
 
-  // Handle remote user activity
-  const handleRemoteUserActivity = (event: UserActivityEvent) => {
-  };
-
   useEffect(() => {
+    const fetchList = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/lists/${code}`);
+        if (response.ok) {
+          const data = await response.json();
+          setList(data.list as ShoppingListWithItems);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchList();
   }, [code]);
-
-  const fetchList = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/lists/${code}`);
-      if (response.ok) {
-        const data = await response.json();
-        setList(data.list);
-      } else {
-        setError('Shopping list not found');
-      }
-    } catch (error) {
-      setError('Failed to load shopping list');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const addItem = async () => {
     if (!newItemName.trim() || !list) return;
@@ -130,7 +118,7 @@ export default function ShoppingListPage() {
 
     const updatedList = {
       ...list,
-      items: [...list.items, tempItem]
+      items: [...list.items, tempItem] as ShoppingItem[]
     };
     setList(updatedList);
     setNewItemName('');
@@ -157,10 +145,10 @@ export default function ShoppingListPage() {
           ...prev,
           items: prev.items.map(item => 
             item.id === tempId ? newItem : item
-          )
+          ) as ShoppingItem[]
         } : null);
       }
-    } catch (error) {
+    } catch {
       setList(list);
       setNewItemName(itemName);
     }
@@ -187,7 +175,7 @@ export default function ShoppingListPage() {
       ...prev,
       items: prev.items.map(item => 
         item.id === itemId ? updatedItem : item
-      )
+      ) as ShoppingItem[]
     } : null);
 
     emitItemUpdate({
@@ -208,15 +196,15 @@ export default function ShoppingListPage() {
           ...prev,
           items: prev.items.map(item => 
             item.id === itemId ? currentItem : item
-          )
+          ) as ShoppingItem[]
         } : null);
       }
-    } catch (error) {
+    } catch {
       setList(prev => prev ? {
         ...prev,
         items: prev.items.map(item => 
           item.id === itemId ? currentItem : item
-        )
+        ) as ShoppingItem[]
       } : null);
     }
   };
@@ -242,7 +230,7 @@ export default function ShoppingListPage() {
       ...prev,
       items: prev.items.map(item => 
         item.id === editingItemId ? updatedItem : item
-      )
+      ) as ShoppingItem[]
     } : null);
 
     emitItemUpdate({
@@ -263,15 +251,15 @@ export default function ShoppingListPage() {
           ...prev,
           items: prev.items.map(item => 
             item.id === editingItemId ? currentItem : item
-          )
+          ) as ShoppingItem[]
         } : null);
       }
-    } catch (error) {
+    } catch {
       setList(prev => prev ? {
         ...prev,
         items: prev.items.map(item => 
           item.id === editingItemId ? currentItem : item
-        )
+        ) as ShoppingItem[]
       } : null);
     }
 
@@ -292,7 +280,7 @@ export default function ShoppingListPage() {
 
     setList(prev => prev ? {
       ...prev,
-      items: prev.items.filter(item => item.id !== itemId)
+      items: prev.items.filter(item => item.id !== itemId) as ShoppingItem[]
     } : null);
 
     emitItemUpdate({
@@ -308,13 +296,13 @@ export default function ShoppingListPage() {
       if (!response.ok) {
         setList(prev => prev ? {
           ...prev,
-          items: [...prev.items, itemToDelete]
+          items: [...prev.items, itemToDelete] as ShoppingItem[]
         } : null);
       }
-    } catch (error) {
+    } catch {
       setList(prev => prev ? {
         ...prev,
-        items: [...prev.items, itemToDelete]
+        items: [...prev.items, itemToDelete] as ShoppingItem[]
       } : null);
     }
   };
@@ -342,7 +330,7 @@ export default function ShoppingListPage() {
       if (!response.ok) {
         setList(prev => prev ? { ...prev, title: originalTitle } : null);
       }
-    } catch (error) {
+    } catch {
       setList(prev => prev ? { ...prev, title: originalTitle } : null);
     }
   };
@@ -358,7 +346,7 @@ export default function ShoppingListPage() {
       await navigator.clipboard.writeText(getListUrl());
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
-    } catch (error) {
+    } catch {
     }
   };
 
@@ -377,12 +365,12 @@ export default function ShoppingListPage() {
     );
   }
 
-  if (error || !list) {
+  if (!list) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Oops!</h1>
-          <p className="text-gray-600 mb-6">{error || 'Shopping list not found'}</p>
+          <p className="text-gray-600 mb-6">Shopping list not found</p>
           <button
             onClick={() => router.push('/')}
             className="bg-green-200 text-green-800 px-6 py-2 rounded-lg hover:bg-green-300 cursor-pointer"
