@@ -204,24 +204,13 @@ npm start
 ### Database Location
 The SQLite database file (`kupdom.db`) is created in the project root directory.
 
-## Future Enhancements
+## Future Enhancements and Todos
 
-- User registration and authentication
-- Real-time collaboration with WebSockets
-- Push notifications for list updates
-- Categories and tags for items
-- Shopping history and analytics
-- Export/import functionality
-- Multi-language support
-
-## TODOs
-
-- ✅ Fix that password is in plain text in database.ts (implemented secure init-db script)
-- Explore realtime updates of list via websockets
 - Add functionality for links that generate new prefilled list
-- Remove pending from legend on the lists page
+- Add e2e tests
 - Add autocomplete for basic groceries
-- Add czech/english language switch
+- Add czech/english language switch instead of admin link
+- Shopping history and analytics
 
 ## License
 
