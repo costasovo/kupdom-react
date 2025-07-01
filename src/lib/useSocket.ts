@@ -25,7 +25,6 @@ export const useSocket = ({
     if (socketRef.current && isConnected && !hasJoinedRef.current) {
       socketRef.current.emit('join-list', { listCode });
       hasJoinedRef.current = true;
-      console.log(`Joined list room: ${listCode}`);
     }
   }, [listCode, isConnected]);
 

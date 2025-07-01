@@ -1,0 +1,41 @@
+{
+  "HomePage": {
+    "title": "KupDom",
+    "subtitle": "Your Smart Shopping Companion",
+    "createList": "Create New Shopping List",
+    "creating": "Creating...",
+    "or": "or",
+    "enterCode": "Enter List Code",
+    "codePlaceholder": "e.g., ABC123",
+    "goToList": "Go to List",
+    "admin": "Admin"
+  },
+  "ListPage": {
+    "title": "Shopping List",
+    "activeUsers": "Active users",
+    "addItem": "Add Item",
+    "addItemPlaceholder": "Enter item name...",
+    "share": "Share",
+    "copyLink": "Copy Link",
+    "linkCopied": "Link copied!",
+    "backToHome": "← Back to Home",
+    "status": {
+      "pending": "Pending",
+      "bought": "Bought",
+      "unavailable": "Unavailable"
+    }
+  },
+  "Admin": {
+    "login": "Admin Login",
+    "loginSubtitle": "Access the admin dashboard",
+    "username": "Username",
+    "password": "Password",
+    "usernamePlaceholder": "Enter username",
+    "passwordPlaceholder": "Enter password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "invalidCredentials": "Invalid credentials",
+    "loginFailed": "Login failed. Please try again.",
+    "backToHome": "← Back to Home"
+  }
+} 

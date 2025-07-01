@@ -29,4 +29,9 @@ export async function PUT(
     console.error('Error updating shopping list title:', error);
     return NextResponse.json({ error: 'Failed to update shopping list title' }, { status: 500 });
   }
+}
+
+export async function PATCH(request: NextRequest, context: { params: Promise<{ code: string }> }) {
+  // Delegate to PUT handler for compatibility
+  return PUT(request, context);
 } 

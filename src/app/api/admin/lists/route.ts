@@ -3,6 +3,12 @@ import { getAllShoppingLists } from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check authentication
+    const adminToken = request.cookies.get('admin_token');
+    if (!adminToken || adminToken.value !== 'authenticated') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');

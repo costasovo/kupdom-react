@@ -19,23 +19,23 @@ export const initializeSocket = () => {
     );
     
     socket.on('connect', () => {
-      console.log('Connected to Socket.io server');
+      // console.log('Connected to Socket.io server');
     });
     
     socket.on('disconnect', () => {
-      console.log('Disconnected from Socket.io server');
+      // console.log('Disconnected from Socket.io server');
     });
     
     socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
+      // console.error('Socket connection error:', error);
     });
 
     socket.on('reconnect', (attemptNumber) => {
-      console.log(`Reconnected to Socket.io server after ${attemptNumber} attempts`);
+      // console.log(`Reconnected to Socket.io server after ${attemptNumber} attempts`);
     });
 
     socket.on('reconnect_error', (error) => {
-      console.error('Socket reconnection error:', error);
+      // console.error('Socket reconnection error:', error);
     });
   }
   

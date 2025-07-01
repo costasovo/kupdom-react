@@ -62,4 +62,9 @@ export async function DELETE(
     console.error('Error deleting item:', error);
     return NextResponse.json({ error: 'Failed to delete item' }, { status: 500 });
   }
+}
+
+export async function PATCH(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  // Delegate to PUT handler for compatibility
+  return PUT(request, context);
 } 

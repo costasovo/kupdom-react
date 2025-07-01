@@ -15,9 +15,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    // In a real app, you'd set up proper session management
-    // For now, we'll just return success
-    return NextResponse.json({ success: true });
+    // Create response with success
+    const response = NextResponse.json({ success: true });
+    
+    // Set admin session cookie
+    response.cookies.set('admin_token', 'authenticated', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24, // 24 hours
+      path: '/'
+    });
+
+    return response;
   } catch (error) {
     console.error('Error during login:', error);
     return NextResponse.json({ error: 'Login failed' }, { status: 500 });

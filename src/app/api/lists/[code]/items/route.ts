@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getShoppingListByCode, addItem } from '@/lib/database';
+import db from '@/lib/database';
 
 export async function POST(
   request: NextRequest,
@@ -24,10 +25,14 @@ export async function POST(
 
     const result = addItem(list.id, name.trim());
     
-    return NextResponse.json({ 
-      success: true, 
-      id: result.lastInsertRowid 
-    });
+    // Fetch the complete item data after insertion
+    const newItem = db.prepare(`
+      SELECT id, name, status, position, created_at, list_id
+      FROM items 
+      WHERE id = ?
+    `).get(result.lastInsertRowid) as any;
+    
+    return NextResponse.json(newItem);
   } catch (error) {
     console.error('Error adding item:', error);
     return NextResponse.json({ error: 'Failed to add item' }, { status: 500 });

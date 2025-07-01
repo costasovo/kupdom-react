@@ -1,0 +1,41 @@
+{
+  "HomePage": {
+    "title": "KupDom",
+    "subtitle": "Váš chytrý nákupní společník",
+    "createList": "Vytvořit nový nákupní seznam",
+    "creating": "Vytvářím...",
+    "or": "nebo",
+    "enterCode": "Zadejte kód seznamu",
+    "codePlaceholder": "např. ABC123",
+    "goToList": "Přejít na seznam",
+    "admin": "Admin"
+  },
+  "ListPage": {
+    "title": "Nákupní seznam",
+    "activeUsers": "Aktivní uživatelé",
+    "addItem": "Přidat položku",
+    "addItemPlaceholder": "Zadejte název položky...",
+    "share": "Sdílet",
+    "copyLink": "Kopírovat odkaz",
+    "linkCopied": "Odkaz zkopírován!",
+    "backToHome": "← Zpět na hlavní stránku",
+    "status": {
+      "pending": "Čekající",
+      "bought": "Zakoupeno",
+      "unavailable": "Nedostupné"
+    }
+  },
+  "Admin": {
+    "login": "Přihlášení administrátora",
+    "loginSubtitle": "Přístup do administrátorského panelu",
+    "username": "Uživatelské jméno",
+    "password": "Heslo",
+    "usernamePlaceholder": "Zadejte uživatelské jméno",
+    "passwordPlaceholder": "Zadejte heslo",
+    "signIn": "Přihlásit se",
+    "signingIn": "Přihlašuji...",
+    "invalidCredentials": "Neplatné přihlašovací údaje",
+    "loginFailed": "Přihlášení selhalo. Zkuste to prosím znovu.",
+    "backToHome": "← Zpět na hlavní stránku"
+  }
+} 
