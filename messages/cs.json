@@ -25,6 +25,10 @@
       "unavailable": "Nedostupné"
     }
   },
+  "Autocomplete": {
+    "history": "Historie",
+    "noSuggestions": "Žádné návrhy nenalezeny"
+  },
   "Admin": {
     "login": "Přihlášení administrátora",
     "loginSubtitle": "Přístup do administrátorského panelu",

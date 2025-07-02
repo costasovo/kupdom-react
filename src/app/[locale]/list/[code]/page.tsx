@@ -7,6 +7,7 @@ import { useRouter } from '@/i18n/navigation';
 import { ShoppingListWithItems, ShoppingItem } from '@/types';
 import { useSocket } from '@/lib/useSocket';
 import { ItemUpdateEvent, TitleUpdateEvent } from '@/lib/socket';
+import AutocompleteInput from '@/components/AutocompleteInput';
 
 export default function ShoppingListPage() {
   const params = useParams();
@@ -335,12 +336,6 @@ export default function ShoppingListPage() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      addItem();
-    }
-  };
-
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(getListUrl());
@@ -498,13 +493,12 @@ export default function ShoppingListPage() {
         {/* Add New Item */}
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6 border border-gray-100">
           <div className="flex gap-2">
-            <input
-              type="text"
+            <AutocompleteInput
               value={newItemName}
-              onChange={(e) => setNewItemName(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onChange={setNewItemName}
+              onEnter={addItem}
               placeholder={t('addItemPlaceholder')}
-              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-transparent bg-white text-gray-900 placeholder-gray-500"
+              className="flex-1"
             />
             <button
               onClick={addItem}

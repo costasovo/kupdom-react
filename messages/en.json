@@ -25,6 +25,10 @@
       "unavailable": "Unavailable"
     }
   },
+  "Autocomplete": {
+    "history": "History",
+    "noSuggestions": "No suggestions found"
+  },
   "Admin": {
     "login": "Admin Login",
     "loginSubtitle": "Access the admin dashboard",
