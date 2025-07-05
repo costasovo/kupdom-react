@@ -5,7 +5,7 @@ let socket: Socket | null = null;
 export const initializeSocket = () => {
   if (!socket) {
     socket = io(process.env.NODE_ENV === 'production' 
-      ? process.env.NEXT_PUBLIC_APP_URL || 'https://your-domain.vercel.app'
+      ? process.env.NEXT_PUBLIC_APP_URL || window.location.origin
       : 'http://localhost:3001',
       {
         // Prevent automatic reconnection to avoid loops

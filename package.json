@@ -8,6 +8,7 @@
     "dev:full": "concurrently \"npm run dev\" \"npm run dev:socket\"",
     "build": "next build",
     "start": "next start",
+    "start:prod": "node socket-server.js",
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",

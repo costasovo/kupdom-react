@@ -2,7 +2,7 @@ import Database from 'better-sqlite3';
 import bcrypt from 'bcryptjs';
 import path from 'path';
 
-const dbPath = path.join(process.cwd(), 'kupdom.db');
+const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'kupdom.db');
 const db = new Database(dbPath);
 
 // Initialize database tables (without admin user creation)
