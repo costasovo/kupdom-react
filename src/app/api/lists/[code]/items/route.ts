@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getShoppingListByCode, addItem } from '@/lib/database';
 import db from '@/lib/database';
+import type { ShoppingItem } from '@/types/database';
 
 export async function POST(
   request: NextRequest,
@@ -30,7 +31,7 @@ export async function POST(
       SELECT id, name, status, position, created_at, list_id
       FROM items 
       WHERE id = ?
-    `).get(result.lastInsertRowid) as unknown;
+    `).get(result.lastInsertRowid) as ShoppingItem;
     
     return NextResponse.json(newItem);
   } catch (error) {

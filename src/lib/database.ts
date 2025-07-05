@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import bcrypt from 'bcryptjs';
 import path from 'path';
+import type { ShoppingList, ShoppingItem, ShoppingListWithItemCount, PaginatedLists } from '@/types/database';
 
 const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'kupdom.db');
 const db = new Database(dbPath);
@@ -73,12 +74,12 @@ export function createShoppingList(title: string): { id: number; code: string } 
   return { id: result.lastInsertRowid as number, code };
 }
 
-export function getShoppingListByCode(code: string) {
+export function getShoppingListByCode(code: string): ShoppingList | undefined {
   return db.prepare(`
     SELECT id, code, title, created_at, updated_at 
     FROM shopping_lists 
     WHERE code = ?
-  `).get(code) as unknown;
+  `).get(code) as ShoppingList | undefined;
 }
 
 export function updateShoppingListTitle(id: number, title: string) {
@@ -90,13 +91,13 @@ export function updateShoppingListTitle(id: number, title: string) {
 }
 
 // Item operations
-export function getItemsByListId(listId: number) {
+export function getItemsByListId(listId: number): ShoppingItem[] {
   return db.prepare(`
     SELECT id, name, status, position 
     FROM items 
     WHERE list_id = ? 
     ORDER BY position ASC
-  `).all(listId) as unknown[];
+  `).all(listId) as ShoppingItem[];
 }
 
 export function addItem(listId: number, name: string) {
@@ -122,7 +123,7 @@ export function deleteItem(itemId: number) {
 }
 
 // Admin operations
-export function getAllShoppingLists(page: number = 1, limit: number = 10) {
+export function getAllShoppingLists(page: number = 1, limit: number = 10): PaginatedLists {
   const offset = (page - 1) * limit;
   const lists = db.prepare(`
     SELECT id, code, title, created_at, updated_at,
@@ -130,7 +131,7 @@ export function getAllShoppingLists(page: number = 1, limit: number = 10) {
     FROM shopping_lists 
     ORDER BY created_at DESC 
     LIMIT ? OFFSET ?
-  `).all(limit, offset) as unknown[];
+  `).all(limit, offset) as ShoppingListWithItemCount[];
   
   const total = db.prepare('SELECT COUNT(*) as count FROM shopping_lists').get() as { count: number };
   
