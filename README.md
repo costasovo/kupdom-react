@@ -1,22 +1,68 @@
-# KupDom - Smart Shopping Lists
+# KupDom - Shopping List App
 
-A Next.js-powered React SSR application for managing shopping lists with a simple, mobile-friendly interface.
+A real-time collaborative shopping list application built with Next.js, Socket.io, and SQLite.
+
+## Development Scripts
+
+### Development Mode
+```bash
+# Fast development with HMR and Fast Refresh (Next.js only)
+npm run dev
+
+# Production-like development with WebSocket (Next.js + Socket.io)
+npm run dev:socket
+
+# Full development with both HMR and WebSocket (recommended for WebSocket features)
+npm run dev:full
+```
+
+### Production
+```bash
+# Build the application
+npm run build
+
+# Start production server (Next.js + Socket.io)
+npm run start
+```
+
+### Database
+```bash
+# Initialize database and create admin user
+npm run init-db
+```
+
+## Development Workflow
+
+1. **Most development**: Use `npm run dev` for fast development with Hot Module Replacement
+2. **WebSocket features**: Use `npm run dev:full` when you need to test real-time functionality
+3. **Production testing**: Use `npm run dev:socket` to test the production setup locally
+
+## Environment Variables
+
+Copy `env.example` to `.env.local` and configure:
+
+```bash
+# Development
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Production
+NODE_ENV=production
+NEXT_PUBLIC_APP_URL=https://kupdom.cz
+HOSTNAME=0.0.0.0
+PORT=3001
+DATABASE_PATH=./kupdom.db
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_secure_password_here
+```
 
 ## Features
 
-### For Users
-- **Homepage**: Create new shopping lists or join existing ones with a 6-character code
-- **Shopping List Management**: 
-  - Add, edit, and delete items
-  - Mark items as bought, unavailable, or pending
-  - Edit list title
-  - Mobile-friendly design for shopping on the go
-- **Real-time Updates**: Changes are immediately reflected
-
-### For Admins
-- **Secure Login**: Admin access with username/password authentication
-- **Dashboard**: View all shopping lists with pagination
-- **List Management**: Access any shopping list for monitoring
+- Real-time collaborative shopping lists
+- WebSocket-based live updates
+- Admin dashboard
+- SQLite database with automatic initialization
+- TypeScript support
+- Responsive design with Tailwind CSS
 
 ## Tech Stack
 

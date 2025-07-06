@@ -31,4 +31,4 @@ ENV NODE_ENV=production
 ENV DATABASE_PATH=/app/data/kupdom.db
 
 # Start the application
-CMD ["npm", "run", "start:prod"] 
+CMD ["npm", "run", "start"] 
