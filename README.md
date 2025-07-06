@@ -208,8 +208,8 @@ The SQLite database file (`kupdom.db`) is created in the project root directory.
 
 - Add functionality for links that generate new prefilled list
 - Add e2e tests
-- Add autocomplete for basic groceries
-- Add czech/english language switch instead of admin link
+- Improve autocomplete for basic groceries
+- Add czech/english language switch
 - Shopping history and analytics
 
 ## License

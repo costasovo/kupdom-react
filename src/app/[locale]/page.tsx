@@ -46,15 +46,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
-      <div className="absolute top-4 right-4">
-        <button
-          onClick={() => router.push('/admin/login')}
-          className="text-xs text-gray-500 hover:text-gray-700 underline cursor-pointer"
-        >
-          {t('admin')}
-        </button>
-      </div>
-
       <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
         <h1 className="text-4xl font-bold text-gray-800 mb-2">{t('title')}</h1>
         <p className="text-gray-600 mb-8">{t('subtitle')}</p>
