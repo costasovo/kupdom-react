@@ -56,9 +56,7 @@ async function runInitialization() {
     await initializeDatabase({
       dbPath,
       adminUsername: username,
-      adminPassword: password,
-      overwrite: true,
-      interactive: true
+      adminPassword: password
     });
     
     console.log('\n🎉 Database initialization completed successfully!');

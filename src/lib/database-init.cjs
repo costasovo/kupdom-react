@@ -6,9 +6,7 @@ function initializeDatabase(options = {}) {
   const {
     dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'kupdom.db'),
     adminUsername = process.env.ADMIN_USERNAME,
-    adminPassword = process.env.ADMIN_PASSWORD,
-    overwrite = false,
-    interactive = false
+    adminPassword = process.env.ADMIN_PASSWORD
   } = options;
 
   console.log('🔧 Initializing database...');
@@ -57,7 +55,7 @@ function initializeDatabase(options = {}) {
     // Add is_admin column to existing users table if it doesn't exist
     try {
       db.exec('ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE');
-    } catch (error) {
+    } catch {
       // Column already exists, ignore error
     }
 

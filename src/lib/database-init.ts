@@ -6,17 +6,13 @@ export interface DatabaseInitOptions {
   dbPath?: string;
   adminUsername?: string;
   adminPassword?: string;
-  overwrite?: boolean;
-  interactive?: boolean;
 }
 
 export async function initializeDatabase(options: DatabaseInitOptions = {}) {
   const {
     dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'kupdom.db'),
     adminUsername = process.env.ADMIN_USERNAME,
-    adminPassword = process.env.ADMIN_PASSWORD,
-    overwrite = false,
-    interactive = false
+    adminPassword = process.env.ADMIN_PASSWORD
   } = options;
 
   console.log('🔧 Initializing database...');
@@ -65,7 +61,7 @@ export async function initializeDatabase(options: DatabaseInitOptions = {}) {
     // Add is_admin column to existing users table if it doesn't exist
     try {
       db.exec('ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE');
-    } catch (error) {
+    } catch {
       // Column already exists, ignore error
     }
 
