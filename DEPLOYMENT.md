@@ -54,6 +54,8 @@ NEXT_PUBLIC_APP_URL=https://kupdom.cz
 HOSTNAME=0.0.0.0
 PORT=3001
 DATABASE_PATH=/app/data/kupdom.db
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_secure_password_here
 ```
 
 ## Step 4: Set Up Custom Domain
@@ -75,18 +77,13 @@ DATABASE_PATH=/app/data/kupdom.db
    - Value: `[your-railway-app].railway.app`
    - TTL: 3600
 
-## Step 5: Initialize Database
+## Step 5: Database Auto-Initialization
 
-After deployment, you need to initialize your database:
+The application now automatically initializes the database on startup! 
 
-1. Go to your Railway project → Deployments
-2. Click on the latest deployment
-3. Go to the "Logs" tab
-4. Run the database initialization command:
+**No manual steps required** - the database tables and admin user will be created automatically when the app starts.
 
-```bash
-railway run npm run init-db
-```
+Make sure you've set the `ADMIN_USERNAME` and `ADMIN_PASSWORD` environment variables in Railway as shown in Step 3.
 
 ## Step 6: Verify Deployment
 
