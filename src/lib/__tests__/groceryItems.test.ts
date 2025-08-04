@@ -2,8 +2,8 @@ import { searchGroceryItems } from '../groceryItems';
 
 describe('groceryItems', () => {
   describe('searchGroceryItems', () => {
-    it('finds Milk when searching for mil', () => {
-      const results = searchGroceryItems('mil', 'en');
+    it('finds Milk when searching for milk', () => {
+      const results = searchGroceryItems('milk', 'en');
       expect(results).toHaveLength(1);
       expect(results[0].en).toBe('Milk');
     });

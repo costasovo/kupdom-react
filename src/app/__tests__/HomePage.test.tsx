@@ -25,7 +25,7 @@ describe('HomePage', () => {
     
     const image = screen.getByAltText('Man with shopping bag heading to grocery store')
     expect(image).toBeInTheDocument()
-    expect(image).toHaveAttribute('src', expect.stringContaining('man.png'))
+    expect(image).toHaveAttribute('src', expect.stringContaining('man2%402x.png'))
   })
 
   it('renders create new list button', () => {

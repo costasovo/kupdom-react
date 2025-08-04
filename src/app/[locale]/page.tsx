@@ -52,7 +52,7 @@ export default function HomePage() {
 
         <div className="mb-8 flex justify-center">
           <Image
-            src="/man.png"
+            src="/man2@2x.png"
             alt="Man with shopping bag heading to grocery store"
             width={200}
             height={200}
