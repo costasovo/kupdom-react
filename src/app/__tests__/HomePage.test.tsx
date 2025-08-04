@@ -1,12 +1,32 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import HomePage from '../page'
+import HomePage from '../[locale]/page'
 
 // Mock Next.js router
 const mockPush = jest.fn()
-jest.mock('next/navigation', () => ({
+jest.mock('@/i18n/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
 }))
+
+// Mock next-intl
+const mockTranslations = {
+  'title': 'KupDom',
+  'subtitle': 'Your Smart Shopping Companion',
+  'createList': 'Create New Shopping List',
+  'creating': 'Creating...',
+  'or': 'or',
+  'enterCode': 'Enter List Code',
+  'codePlaceholder': 'e.g., ABC123',
+  'goToList': 'Go to List',
+  'admin': 'Admin'
+}
+
+jest.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => mockTranslations[key as keyof typeof mockTranslations] || key,
+}))
+
+// Mock fetch
+global.fetch = jest.fn()
 
 describe('HomePage', () => {
   beforeEach(() => {

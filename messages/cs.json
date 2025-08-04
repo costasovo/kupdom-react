@@ -18,7 +18,7 @@
     "share": "Sdílet",
     "copyLink": "Kopírovat odkaz",
     "linkCopied": "Odkaz zkopírován!",
-    "backToHome": "← Zpět na hlavní stránku",
+    "backToHome": "← Zpět",
     "status": {
       "pending": "Čekající",
       "bought": "Zakoupeno",
@@ -40,6 +40,6 @@
     "signingIn": "Přihlašuji...",
     "invalidCredentials": "Neplatné přihlašovací údaje",
     "loginFailed": "Přihlášení selhalo. Zkuste to prosím znovu.",
-    "backToHome": "← Zpět na hlavní stránku"
+    "backToHome": "← Zpět"
   }
 } 
