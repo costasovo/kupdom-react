@@ -19,9 +19,16 @@ export async function GET(request: NextRequest) {
 
     const result = getAllShoppingLists(page, limit);
     
+    // Calculate total pages
+    const totalPages = Math.ceil(result.total / limit);
+    
     return NextResponse.json({
       success: true,
-      ...result
+      lists: result.lists,
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      totalPages
     });
   } catch (error) {
     console.error('Error fetching shopping lists:', error);

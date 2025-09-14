@@ -16,6 +16,7 @@ export default function AdminDashboardClient() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalLists, setTotalLists] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function AdminDashboardClient() {
           const data = await response.json();
           setLists(data.lists);
           setTotalPages(data.totalPages);
+          setTotalLists(data.total);
         } else {
           console.error('Failed to load lists');
         }
@@ -117,7 +119,7 @@ export default function AdminDashboardClient() {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Lists</p>
-                <p className="text-2xl font-bold text-gray-800">{lists.length}</p>
+                <p className="text-2xl font-bold text-gray-800">{totalLists}</p>
               </div>
             </div>
           </div>
@@ -130,7 +132,7 @@ export default function AdminDashboardClient() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Items</p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {lists.reduce((sum, list) => sum + list.item_count, 0)}
+                  {lists?.reduce((sum, list) => sum + list.item_count, 0) || 0}
                 </p>
               </div>
             </div>
