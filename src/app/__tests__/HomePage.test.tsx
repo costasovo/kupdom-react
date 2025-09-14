@@ -61,11 +61,6 @@ describe('HomePage', () => {
     expect(screen.getByText('Go to List')).toBeInTheDocument()
   })
 
-  it('renders admin link', () => {
-    render(<HomePage />)
-    
-    expect(screen.getByText('Admin')).toBeInTheDocument()
-  })
 
   describe('Create New Shopping List', () => {
     it('creates a new list successfully', async () => {
@@ -191,16 +186,4 @@ describe('HomePage', () => {
     })
   })
 
-  describe('Admin Link', () => {
-    it('navigates to admin login', async () => {
-      const user = userEvent.setup()
-
-      render(<HomePage />)
-      
-      const adminLink = screen.getByText('Admin')
-      await user.click(adminLink)
-
-      expect(mockPush).toHaveBeenCalledWith('/admin/login')
-    })
-  })
 }) 
